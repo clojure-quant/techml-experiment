@@ -116,11 +116,73 @@ ds2
 ;:_unnamed [5 3]:
 ;| symbol |       date | price |
 ;|--------|------------|------:|
-;|   MSFT | 2000-01-01 | 39.81 |
-;|   MSFT | 2000-02-01 | 36.35 |
-;|   MSFT | 2000-03-01 | 43.22 |
-;|   MSFT | 2000-04-01 | 28.37 |
+;|   MSFT | 2000-01-01 | 39.81 | -> this goes to AAPL 2009-07-01
+;|   MSFT | 2000-02-01 | 36.35 | -> this goes to AAPL 2009-08-01
+;|   MSFT | 2000-03-01 | 43.22 | -> this goes to AAPL 2009-09-01
+;|   MSFT | 2000-04-01 | 28.37 | -> this goes to AAPL 2009-10-01
 ;|   AMZN | 2005-01-01 | 43.22 |
 
 ; price column values seem to come from indices from the ORIGINAL dataset, 
 ; NOT from the selection.
+
+
+(defn dummy-select2 [ds]
+  (tc/select-rows ds (fn [row]
+                       (and (t/> (get row "date") (t/date "2009-06-01"))
+                            (or (= (get row "symbol") "AAPL")
+                                (= (get row "symbol") "AMZN"))
+                            ))))
+
+(-> ds2
+    dummy-select2
+    cloneds)
+
+;_unnamed [18 3]:
+;| symbol |       date |  price |
+;|--------|------------|-------:|
+;|   AMZN | 2009-07-01 |  85.76 |
+;|   AMZN | 2009-08-01 |  81.19 |
+;|   AMZN | 2009-09-01 |  93.36 |
+;|   AMZN | 2009-10-01 | 118.81 |
+;|   AMZN | 2009-11-01 | 135.91 |
+;|   AMZN | 2009-12-01 | 134.52 |
+;|   AMZN | 2010-01-01 | 125.41 |
+;|   AMZN | 2010-02-01 | 118.40 |
+;|   AMZN | 2010-03-01 | 128.82 |
+;|   AAPL | 2009-07-01 | 163.39 |
+;|   AAPL | 2009-08-01 | 168.21 |
+;|   AAPL | 2009-09-01 | 185.35 |
+;|   AAPL | 2009-10-01 | 188.50 |
+;|   AAPL | 2009-11-01 | 199.91 |
+;|   AAPL | 2009-12-01 | 210.73 |
+;|   AAPL | 2010-01-01 | 192.06 |
+;|   AAPL | 2010-02-01 | 204.62 |
+;|   AAPL | 2010-03-01 | 223.02 |
+
+;; THIS ONE WORKS OK - HOW IS THIS POSSIBLE ???
+
+
+(defn dummy-select3 [ds]
+  (tc/select-rows ds (fn [row]
+                       (and (t/> (get row "date") (t/date "2009-06-01"))
+                            (= (get row "symbol") "AMZN")
+                            ))))
+
+(-> ds2
+    dummy-select3
+    cloneds)
+
+;_unnamed [9 3]:
+;| symbol |       date | price |
+;|--------|------------|------:|
+;|   AMZN | 2009-07-01 | 39.81 |
+;|   AMZN | 2009-08-01 | 36.35 |
+;|   AMZN | 2009-09-01 | 43.22 |
+;|   AMZN | 2009-10-01 | 28.37 |
+;|   AMZN | 2009-11-01 | 25.45 |
+;|   AMZN | 2009-12-01 | 32.54 |
+;|   AMZN | 2010-01-01 | 28.40 |
+;|   AMZN | 2010-02-01 | 28.40 |
+;|   AMZN | 2010-03-01 | 24.53 |
+
+; IDENTICAL PRICES AS IF SYMBOL AAPL
