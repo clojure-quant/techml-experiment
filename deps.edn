@@ -1,0 +1,14 @@
+{:paths ["src" ]
+ :deps
+ {org.clojure/clojure    {:mvn/version "1.11.3"}
+  nano-id/nano-id {:mvn/version "1.1.0"}
+  scicloj/tablecloth {:mvn/version "7.042"} ; ensure clj-transit is there for sure.
+  techascent/tech.ml.dataset {:mvn/version "7.052"} ; use latest version of techml, tablecloth sometimes falls behind
+  com.cnuernber/tmdjs {:mvn/version "2.002"} ; https://github.com/cnuernber/tmdjs
+  com.techascent/tmducken {:mvn/version "0.10.1-01"} 
+  com.taoensso/nippy {:mvn/version "3.4.2"}
+  techascent/tech.io {:mvn/version "4.31"}
+  
+  }
+ 
+ }
