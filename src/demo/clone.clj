@@ -26,6 +26,33 @@
 
 ds2
 
+;:_unnamed [560 3]:
+;| symbol |       date |  price |
+;|--------|------------|-------:|
+;|   MSFT | 2000-01-01 |  39.81 |
+;|   MSFT | 2000-02-01 |  36.35 |
+;|   MSFT | 2000-03-01 |  43.22 |
+;|   MSFT | 2000-04-01 |  28.37 |
+;|   MSFT | 2000-05-01 |  25.45 |
+;|   MSFT | 2000-06-01 |  32.54 |
+;|   MSFT | 2000-07-01 |  28.40 |
+;|   MSFT | 2000-08-01 |  28.40 |
+;|   MSFT | 2000-09-01 |  24.53 |
+;|   MSFT | 2000-10-01 |  28.02 |
+;|    ... |        ... |    ... |
+;|   AAPL | 2009-05-01 | 135.81 |
+;|   AAPL | 2009-06-01 | 142.43 |
+;|   AAPL | 2009-07-01 | 163.39 |
+;|   AAPL | 2009-08-01 | 168.21 |
+;|   AAPL | 2009-09-01 | 185.35 |
+;|   AAPL | 2009-10-01 | 188.50 |
+;|   AAPL | 2009-11-01 | 199.91 |
+;|   AAPL | 2009-12-01 | 210.73 |
+;|   AAPL | 2010-01-01 | 192.06 |
+;|   AAPL | 2010-02-01 | 204.62 |
+;|   AAPL | 2010-03-01 | 223.02 |
+
+
 
 (defn dummy-select [ds]
   (tc/select-rows ds (fn [row]
@@ -75,8 +102,25 @@ ds2
 ;|   AAPL | 2010-02-01 | 28.40 |
 ;|   AAPL | 2010-03-01 | 24.53 |
 
+;; NOTE: 1. load from duckdb 2. use tablecloth/select/rows 3. clone columns
+;;      => result dataset has the selected column correct (here :date), but 
+;;         price column has wrong values.
 
+(-> ds2
+    (tc/select-rows (fn [row]
+                      (or (= (get row "price") 39.81)
+                          (= (get row "price") 36.35)
+                          (= (get row "price") 43.22)
+                          (= (get row "price") 28.37)))))
 
+;:_unnamed [5 3]:
+;| symbol |       date | price |
+;|--------|------------|------:|
+;|   MSFT | 2000-01-01 | 39.81 |
+;|   MSFT | 2000-02-01 | 36.35 |
+;|   MSFT | 2000-03-01 | 43.22 |
+;|   MSFT | 2000-04-01 | 28.37 |
+;|   AMZN | 2005-01-01 | 43.22 |
 
-
-
+; price column values seem to come from indices from the ORIGINAL dataset, 
+; NOT from the selection.
