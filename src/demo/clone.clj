@@ -130,8 +130,7 @@ ds2
   (tc/select-rows ds (fn [row]
                        (and (t/> (get row "date") (t/date "2009-06-01"))
                             (or (= (get row "symbol") "AAPL")
-                                (= (get row "symbol") "AMZN"))
-                            ))))
+                                (= (get row "symbol") "AMZN"))))))
 
 (-> ds2
     dummy-select2
@@ -165,8 +164,7 @@ ds2
 (defn dummy-select3 [ds]
   (tc/select-rows ds (fn [row]
                        (and (t/> (get row "date") (t/date "2009-06-01"))
-                            (= (get row "symbol") "AMZN")
-                            ))))
+                            (= (get row "symbol") "AMZN")))))
 
 (-> ds2
     dummy-select3
@@ -186,3 +184,27 @@ ds2
 ;|   AMZN | 2010-03-01 | 24.53 |
 
 ; IDENTICAL PRICES AS IF SYMBOL AAPL
+
+;; TEST FOR DIRECT FROM CSV
+
+(defn dummy-select3 [ds]
+  (tc/select-rows ds (fn [row]
+                       (and (t/> (get row :date) (t/date "2009-06-01"))
+                            (= (get row :symbol) "AMZN")))))
+
+(-> stocks
+    dummy-select3
+    cloneds)
+
+;_unnamed [9 3]:
+;| :symbol |      :date | :price |
+;|---------|------------|-------:|
+;|    AMZN | 2000-01-01 |  39.81 |
+;|    AMZN | 2000-02-01 |  36.35 |
+;|    AMZN | 2000-03-01 |  43.22 |
+;|    AMZN | 2000-04-01 |  28.37 |
+;|    AMZN | 2000-05-01 |  25.45 |
+;|    AMZN | 2000-06-01 |  32.54 |
+;|    AMZN | 2000-07-01 |  28.40 |
+;|    AMZN | 2000-08-01 |  28.40 |
+;|    AMZN | 2000-09-01 |  24.53 |
