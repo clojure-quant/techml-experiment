@@ -1,4 +1,4 @@
-(ns demo.ffipointer
+(ns demo.duckdb-ffipointer
   (:require
    [tablecloth.api :as tc]
    [tick.core :as t]
