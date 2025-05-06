@@ -7,6 +7,7 @@
    [tech.v3.io :as io]
    [tmducken.duckdb :as duckdb]))
 
+;; this issue is fixed with techml dataset 7.059
 
 (def stocks
   (ds/->dataset "https://github.com/techascent/tech.ml.dataset/raw/master/test/data/stocks.csv"
@@ -16,7 +17,7 @@
 (duckdb/initialize! {:duckdb-home "./binaries"})
 
 
-(def db (duckdb/open-db "clone.ddb"))
+(def db (duckdb/open-db "clone2.ddb"))
 (def conn (duckdb/connect db))
 
 (duckdb/create-table! conn stocks)
@@ -89,18 +90,19 @@ ds2
     dummy-select
     cloneds)
 
+; this issue is working now:
 ;_unnamed [9 3]:
-;| symbol |       date | price |
-;|--------|------------|------:|
-;|   AAPL | 2009-07-01 | 39.81 |
-;|   AAPL | 2009-08-01 | 36.35 |
-;|   AAPL | 2009-09-01 | 43.22 |
-;|   AAPL | 2009-10-01 | 28.37 |
-;|   AAPL | 2009-11-01 | 25.45 |
-;|   AAPL | 2009-12-01 | 32.54 |
-;|   AAPL | 2010-01-01 | 28.40 |
-;|   AAPL | 2010-02-01 | 28.40 |
-;|   AAPL | 2010-03-01 | 24.53 |
+;| symbol |       date |  price |
+;|--------|------------|-------:|
+;|   AAPL | 2009-07-01 | 163.39 |
+;|   AAPL | 2009-08-01 | 168.21 |
+;|   AAPL | 2009-09-01 | 185.35 |
+;|   AAPL | 2009-10-01 | 188.50 |
+;|   AAPL | 2009-11-01 | 199.91 |
+;|   AAPL | 2009-12-01 | 210.73 |
+;|   AAPL | 2010-01-01 | 192.06 |
+;|   AAPL | 2010-02-01 | 204.62 |
+;|   AAPL | 2010-03-01 | 223.02 |
 
 ;; NOTE: 1. load from duckdb 2. use tablecloth/select/rows 3. clone columns
 ;;      => result dataset has the selected column correct (here :date), but 
@@ -158,8 +160,6 @@ ds2
 ;|   AAPL | 2010-02-01 | 204.62 |
 ;|   AAPL | 2010-03-01 | 223.02 |
 
-;; THIS ONE WORKS OK - HOW IS THIS POSSIBLE ???
-
 
 (defn dummy-select3 [ds]
   (tc/select-rows ds (fn [row]
@@ -197,24 +197,23 @@ ds2
     cloneds)
 
 ;_unnamed [9 3]:
-;| :symbol |      :date | :price |
-;|---------|------------|-------:|
-;|    AMZN | 2000-01-01 |  39.81 |
-;|    AMZN | 2000-02-01 |  36.35 |
-;|    AMZN | 2000-03-01 |  43.22 |
-;|    AMZN | 2000-04-01 |  28.37 |
-;|    AMZN | 2000-05-01 |  25.45 |
-;|    AMZN | 2000-06-01 |  32.54 |
-;|    AMZN | 2000-07-01 |  28.40 |
-;|    AMZN | 2000-08-01 |  28.40 |
-;|    AMZN | 2000-09-01 |  24.53 |
+;| symbol |       date |  price |
+;|--------|------------|-------:|
+;|   AAPL | 2009-07-01 | 163.39 |
+;|   AAPL | 2009-08-01 | 168.21 |
+;|   AAPL | 2009-09-01 | 185.35 |
+;|   AAPL | 2009-10-01 | 188.50 |
+;|   AAPL | 2009-11-01 | 199.91 |
+;|   AAPL | 2009-12-01 | 210.73 |
+;|   AAPL | 2010-01-01 | 192.06 |
+;|   AAPL | 2010-02-01 | 204.62 |
+;|   AAPL | 2010-03-01 | 223.02 |
 
 (-> stocks
     cloneds
     dummy-select3
     )
 
-;; cloning the entire dataset, then selecting works.
 
 ;_unnamed [9 3]:
 ;| :symbol |      :date | :price |
