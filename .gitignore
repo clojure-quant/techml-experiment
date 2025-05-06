@@ -6,3 +6,4 @@ binaries/
 *.ddb.wal
 .nrepl-port
 *.nippy.gz
+*.transit-json
