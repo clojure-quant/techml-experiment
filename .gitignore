@@ -5,3 +5,4 @@ binaries/
 *.ddb
 *.ddb.wal
 .nrepl-port
+*.nippy.gz

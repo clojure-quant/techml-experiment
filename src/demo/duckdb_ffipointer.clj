@@ -42,9 +42,26 @@ ds2
 ; Execution error (ExceptionInfo) at taoensso.nippy/throw-unfreezable (nippy.clj:953).
 ; Unfreezable type: class tech.v3.datatype.ffi.Pointer
 
+(defn clone-ds [d]
+  (->> (tc/column-names d)
+       (map (fn [col-n]
+              [col-n (col/clone (get d col-n))]))
+       (into {})
+       (tc/dataset)))
+
+(->> ds2 
+     clone-ds
+     (save-ds "stocks.nippy.gz"))
+
 (dataset->transit-str ds2)
 ; Execution error at com.cognitect.transit.impl.AbstractEmitter/marshal (AbstractEmitter.java:194).
 ; Not supported: class tech.v3.datatype.ffi.Pointer
+
+(->> ds2 
+     clone-ds 
+     dataset->transit-str
+     )
+; this works
 
 
 (def col-symbol
@@ -58,7 +75,7 @@ ds2
 ds3
 
 (save-ds "stocks3.nippy.gz" ds3)
-(dataset->transit-str ds3)
+(dataset->transit-str ds3) ;; this works
 
 (tc/column-names ds2)
 
