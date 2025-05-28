@@ -1,10 +1,10 @@
-{:paths ["src" ]
+{:paths ["src"]
  :deps
  {org.clojure/clojure    {:mvn/version "1.12.0"}
   nano-id/nano-id {:mvn/version "1.1.0"}
-  scicloj/tablecloth {:mvn/version "7.042"} ; ensure clj-transit is there for sure.
-  techascent/tech.ml.dataset {:mvn/version "7.059"} ; techml dataset that fixes vectorclone, and clone/sort
+  techascent/tech.ml.dataset {:mvn/version "7.060"} ; techml dataset that fixes vectorclone, and clone/sort
+  scicloj/tablecloth {:mvn/version "7.059"} ; ensure clj-transit is there for sure.
   com.cnuernber/tmdjs {:mvn/version "2.002"} ; https://github.com/cnuernber/tmdjs
-  com.techascent/tmducken {:mvn/version "0.10.1-01"} 
-  com.taoensso/nippy {:mvn/version "3.4.2"}
+  com.techascent/tmducken {:mvn/version "0.10.1-01"}
+  com.taoensso/nippy {:mvn/version "3.5.0"}
   techascent/tech.io {:mvn/version "4.31"}}}
