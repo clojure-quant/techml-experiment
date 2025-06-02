@@ -40,8 +40,8 @@
                            (:protective-pivot-high row)
                            ))))
     (tc/select-columns [:date :pivot-low :protective-pivot-low :pivot-high :protective-pivot-high])
-    ;print-ds
-    (tc/info)
+    print-ds
+    ;(tc/info)
     )
 
     ; eval the last expression multiple times, it always returns different number of rows.

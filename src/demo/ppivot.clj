@@ -45,6 +45,7 @@
          {:pivot-low (dtype/clone (dfn/and pivot-low? range?))
           :pivot-high (dtype/clone (dfn/and pivot-high? range?))}))))
 
+
 (defn recent-protective-pivot
   "returns a column that is true, if a protective pivot is found"
   [pivot? high-or-low close {:keys [min-ago
@@ -52,40 +53,38 @@
                                     max-distance-bp
                                     min-distance-bp
                                     high?]}]
-  (let [recent-pivot-ago (volatile! 0)
+  (let [recent-pivot-ago   (volatile! 0)
         recent-pivot-price (volatile! nil)
         n (count close)
         max-mult (+ 1.0 (/ max-distance-bp 10000.0))
         min-mult (+ 1.0 (/ min-distance-bp 10000.0))
         check-range (if high?
-                      ; pivot is 10.0 
+                      ; pivot is 10.0
                       (fn [current-price pivot-price]
-                        ; example valid high-protective 
+                        ; example valid high-protective
                         ; price 9.8 -> lower 9.6 upper 10.6
                         ; (< 9.6 10.0 10.6)
                         (< (* current-price min-mult) pivot-price (* current-price max-mult)))
                       (fn [current-price pivot-price]
-                        ; example valid low-protective 
+                        ; example valid low-protective
                         ; price 10.2 -> lower 9.6 upper 10.1
                         ; (< 9.6 10.0 10.1)
                         (< (/ current-price max-mult) pivot-price (/ current-price min-mult))))]
     ; dtype/clone is essential. otherwise on large datasets, the mapping will not
     ; be done in sequence, which means that the stateful mapping function will fail.
-    (dtype/clone
-     (dtype/make-reader
-      :boolean n
-      (if (pivot? idx)
-        ; pivot 
-        (do (vreset! recent-pivot-ago 0)
-            (vreset! recent-pivot-price (high-or-low idx))
-            false)
-        ; no pivot
-        (do (vswap! recent-pivot-ago inc)
-            (let [current-price (close idx)
-                  pivot-price @recent-pivot-price]
-              (and pivot-price
-                   (< min-ago @recent-pivot-ago max-ago)
-                   (check-range current-price pivot-price)))))))))
+    (mapv (fn [idx]
+            (if (pivot? idx)
+              (do (vreset! recent-pivot-ago 0)
+                  (vreset! recent-pivot-price (high-or-low idx))
+                  false)
+                                        ; no pivot
+              (do (vswap! recent-pivot-ago inc)
+                  (let [current-price (close idx)
+                        pivot-price @recent-pivot-price]
+                    (and pivot-price
+                         (< min-ago @recent-pivot-ago max-ago)
+                         (check-range current-price pivot-price)))))) (range n))))
+
 
 (defn add-protective-pivot
   "input is a tml dataset with bars (open high low close volume)
